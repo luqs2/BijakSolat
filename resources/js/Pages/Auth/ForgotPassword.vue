@@ -4,65 +4,131 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, useForm, router } from '@inertiajs/vue3';
+import { ref } from 'vue';
+import Swal from 'sweetalert2'; // Add this import
 
-defineProps({
-    status: {
-        type: String,
-    },
-});
-
+const emailFound = ref(false);
 const form = useForm({
     email: '',
+    password: '',
+    password_confirmation: '',
+    token: ''
 });
 
-const submit = () => {
-    form.post(route('password.email'));
+const checkEmail = () => {
+    form.post('/check-email', {
+        preserveScroll: true,
+        onSuccess: (response) => {
+            if (response?.props?.flash?.token) {
+                form.token = response?.props?.flash?.token;
+                emailFound.value = true;
+            }
+        },
+        onError: (errors) => {
+            console.error('Email check error:', errors);
+            emailFound.value = false;
+        }
+    });
+};
+
+const resetPassword = () => {
+    form.post('/reset-password', {
+        preserveScroll: true,
+        onSuccess: () => {
+            Swal.fire({
+                title: 'Berjaya!',
+                text: 'Kata laluan berjaya dikemaskini',
+                icon: 'success',
+                confirmButtonText: 'Ok',
+                confirmButtonColor: '#0f766e'
+            }).then(() => {
+                window.location.href = route('login');
+            });
+        }
+    });
+};
+
+const submit = (e) => {
+    e.preventDefault();
+    if (!emailFound.value) {
+        checkEmail();
+    } else {
+        resetPassword();
+    }
 };
 </script>
 
 <template>
-    <GuestLayout>
-        <Head title="Forgot Password" />
+    <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-mint-50">
+        <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
+            <h2 class="text-2xl font-bold text-center text-gray-900 mb-8">
+                Reset Kata Laluan
+            </h2>
 
-        <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
-            Forgot your password? No problem. Just let us know your email
-            address and we will email you a password reset link that will allow
-            you to choose a new one.
-        </div>
+            <div v-if="!emailFound">
+                <form @submit.prevent="checkEmail">
+                    <div>
+                        <InputLabel for="email" value="Email" class="form-label" />
+                        <TextInput
+                            id="email"
+                            type="email"
+                            class="mt-1 block w-full"
+                            v-model="form.email"
+                            required
+                            autofocus
+                        />
+                        <InputError class="mt-2" :message="form.errors.email" />
+                    </div>
 
-        <div
-            v-if="status"
-            class="mb-4 text-sm font-medium text-green-600 dark:text-green-400"
-        >
-            {{ status }}
-        </div>
-
-        <form @submit.prevent="submit">
-            <div>
-                <InputLabel for="email" value="Email" />
-
-                <TextInput
-                    id="email"
-                    type="email"
-                    class="mt-1 block w-full"
-                    v-model="form.email"
-                    required
-                    autofocus
-                    autocomplete="username"
-                />
-
-                <InputError class="mt-2" :message="form.errors.email" />
+                    <div class="mt-6">
+                        <button
+                            type="submit"
+                            class="w-full py-2 px-4 bg-mint-700 hover:bg-mint-800 text-white font-semibold rounded-lg"
+                            :disabled="form.processing"
+                        >
+                            Semak Email
+                        </button>
+                    </div>
+                </form>
             </div>
 
-            <div class="mt-4 flex items-center justify-end">
-                <PrimaryButton
-                    :class="{ 'opacity-25': form.processing }"
-                    :disabled="form.processing"
-                >
-                    Email Password Reset Link
-                </PrimaryButton>
+            <div v-else>
+                <form @submit.prevent="resetPassword">
+                    <div>
+                        <InputLabel for="password" value="Kata Laluan Baru" class="form-label" />
+                        <TextInput
+                            id="password"
+                            type="password"
+                            class="mt-1 block w-full"
+                            v-model="form.password"
+                            required
+                        />
+                        <InputError class="mt-2" :message="form.errors.password" />
+                    </div>
+
+                    <div class="mt-4">
+                        <InputLabel for="password_confirmation" value="Sahkan Kata Laluan" class="form-label" />
+                        <TextInput
+                            id="password_confirmation"
+                            type="password"
+                            class="mt-1 block w-full"
+                            v-model="form.password_confirmation"
+                            required
+                        />
+                    </div>
+
+                    <div class="mt-6">
+                        <button
+                            type="submit"
+                            class="w-full py-2 px-4 bg-mint-700 hover:bg-mint-800 text-white font-semibold rounded-lg"
+                            :disabled="form.processing"
+                        >
+                            Reset Kata Laluan
+                        </button>
+                    </div>
+                </form>
             </div>
-        </form>
-    </GuestLayout>
+        </div>
+    </div>
 </template>

@@ -1,26 +1,27 @@
 <!-- resources/js/Components/Sidebar.vue -->
 <template>
   <div class="relative min-h-screen">
-    <!-- Mobile Menu Button -->
-    <button @click="toggleMobile" class="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-mint-50">
-      <i class="fas fa-chevron-right h-5 w-5 text-mint-800" v-if="!isMobileOpen"></i>
-      <i class="fas fa-times h-6 w-6 text-mint-600" v-else></i>
-    </button>
-
     <!-- Backdrop for mobile -->
     <div v-if="isMobileOpen" @click="toggleMobile" class="lg:hidden fixed inset-0 bg-black/50 z-30"></div>
 
     <!-- Sidebar -->
     <aside :class="`
-            fixed top-0 left-0 h-full z-40
-            ${isExpanded ? 'w-64' : 'w-20'}
-            ${isMobileOpen ? 'translate-x-0' : '-translate-x-full'}
-            lg:translate-x-0
-            transition-all duration-300
-            bg-mint-50 text-mint-900
-          `">
+      fixed top-0 left-0 h-screen w-64 z-40
+      ${isExpanded ? 'w-64' : 'w-20'}
+      ${isMobileOpen ? 'translate-x-0' : '-translate-x-full'}
+      lg:translate-x-0
+      transition-all duration-300
+      bg-mint-50 text-mint-900
+      flex flex-col
+    `">
+      <!-- Mobile Menu Button -->
+      <button @click="toggleMobile" class="lg:hidden absolute -right-14 top-4 p-2.5 rounded-lg bg-mint-50 shadow-md z-50">
+        <i class="fas fa-chevron-right h-5 w-5 text-mint-800" v-if="!isMobileOpen"></i>
+        <i class="fas fa-times h-5 w-5 text-mint-600" v-else></i>
+      </button>
+
       <!-- Profile Section or Login Button -->
-      <div class="p-4 border-b border-mint-200">
+      <div class="flex-shrink-0 p-4 border-b border-mint-200">
         <template v-if="isAuthenticated">
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-full bg-mint-200 flex items-center justify-center overflow-hidden">
@@ -53,7 +54,7 @@
       </button>
 
       <!-- Main Menu -->
-      <div class="p-3">
+      <div class="flex-1 overflow-y-auto p-3">
         <p class="px-3 py-2 text-xs font-medium text-mint-600">MAIN</p>
         <nav class="space-y-1">
           <template v-if="isAuthenticated">
@@ -81,8 +82,7 @@
       </div>
 
       <!-- Bottom Menu -->
-      <div class="absolute bottom-0 left-0 right-0 p-3">
-        <div class="p-4 border-b border-mint-200"></div>
+      <div class="flex-shrink-0 p-3 border-t border-mint-200">
         <p class="px-1 py-2 text-xs font-medium text-mint-600">TETAPAN</p>
         <nav class="space-y-1">
           <template v-if="isAuthenticated">
@@ -184,15 +184,15 @@ export default {
         { name: 'Kemaskini', path: '/kemaskini', icon: 'fas fa-edit' },
         //   { name: 'Tahun', path: '/tahun', icon: 'fas fa-book' },
         { name: 'Guru', path: '/guru', icon: 'fas fa-users' },
-        { name: 'Pautan', path: '/pautan', icon: 'fas fa-calendar' },
+        // { name: 'Pautan', path: '/pautan', icon: 'fas fa-calendar' },
         //   { name: 'Jadual', path: '/jadual', icon: 'fas fa-calendar-alt' },
         { name: 'Statistik', path: '/statistik', icon: 'fas fa-chart-bar' },
         { name: 'Objek Penilaian', path: '/objek-penilaian', icon: 'fas fa-tasks' }
       ],
       guestMenuItems: [
         { name: 'Home', path: '/', icon: 'fas fa-home' },
-        { name: 'About', path: '/about', icon: 'fas fa-info-circle' },
-        { name: 'Contact', path: '/contact', icon: 'fas fa-envelope' }
+        // { name: 'About', path: '/about', icon: 'fas fa-info-circle' },
+        // { name: 'Contact', path: '/contact', icon: 'fas fa-envelope' }
       ],
       bottomMenuItems: [
         { name: 'Tetapan', path: '/tetapan', icon: 'fas fa-cog' },
@@ -200,7 +200,7 @@ export default {
         { name: 'Log Keluar', path: '/logout', icon: 'fas fa-sign-out-alt' }
       ],
       guestBottomMenuItems: [
-        { name: 'Bantuan', path: '/bantuan', icon: 'fas fa-question-circle' },
+        // { name: 'Bantuan', path: '/bantuan', icon: 'fas fa-question-circle' },
         { name: 'Daftar', path: '/register', icon: 'fas fa-user-plus' }
       ],
       fallbackAvatar: '/default-avatar.jpg'

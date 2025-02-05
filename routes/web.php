@@ -24,6 +24,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Auth\PasswordResetLinkController;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -253,6 +256,83 @@ Route::delete('/evaluation/clear/{year}', [EvaluationItemController::class, 'cle
 
 Route::get('/offline', function () {
     return view('offline');
+});
+
+
+
+Route::post('/verify-email', function (Request $request) {
+    $user = User::where('email', $request->email)->first();
+
+    if (!$user) {
+        return response()->json(['message' => 'Email tidak dijumpai'], 404);
+    }
+
+    return response()->json(['message' => 'Email dijumpai']);
+});
+
+Route::post('/reset-password-direct', function (Request $request) {
+    $request->validate([
+        'email' => 'required|email',
+        'password' => 'required|min:8|confirmed',
+    ]);
+
+    $user = User::where('email', $request->email)->first();
+
+    if (!$user) {
+        return response()->json(['message' => 'Email tidak dijumpai'], 404);
+    }
+
+    $user->password = Hash::make($request->password);
+    $user->save();
+
+    return response()->json(['message' => 'Kata laluan berjaya dikemaskini']);
+});
+
+Route::post('/reset-password', function (Request $request) {
+    $request->validate([
+        'email' => 'required|email',
+        'password' => 'required|min:8|confirmed',
+        'token' => 'required'
+    ]);
+
+    $tokenRecord = DB::table('password_reset_tokens')
+        ->where('email', $request->email)
+        ->where('token', $request->token)
+        ->first();
+
+    if (!$tokenRecord) {
+        return back()->withErrors(['email' => 'Token tidak sah']);
+    }
+
+    $user = User::where('email', $request->email)->first();
+    $user->password = Hash::make($request->password);
+    $user->save();
+
+    // Delete the token after successful reset
+    DB::table('password_reset_tokens')
+        ->where('email', $request->email)
+        ->delete();
+
+    return response()->json(['success' => true]);
+});
+
+Route::post('/check-email', function (Request $request) {
+    $user = User::where('email', $request->email)->first();
+
+    if (!$user) {
+        return back()->withErrors(['email' => 'Email tidak dijumpai']);
+    }
+
+    $token = Str::random(60);
+    DB::table('password_reset_tokens')->updateOrInsert(
+        ['email' => $user->email],
+        ['token' => $token, 'created_at' => now()]
+    );
+
+    return back()->with([
+        'status' => 'Email ditemui',
+        'token' => $token
+    ]);
 });
 
 require __DIR__ . '/auth.php';
