@@ -194,17 +194,6 @@ Route::get('/logout', function () {
 })->name('logout');
 
 Route::middleware(['auth'])->group(function () {
-    // Profile & Settings Routes
-    Route::get('/tetapan', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::put('/password', [ProfileController::class, 'updatePassword'])->name('password.update');
-
-    // Single avatar update route with all middlewares
-    Route::post('/profile/avatar', [ProfileController::class, 'updateAvatar'])
-        ->name('profile.avatar.update')
-        ->middleware('verified');
-
-    // ...existing code...
     Route::get('/tetapan', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::put('/password', [ProfileController::class, 'updatePassword'])->name('password.update');
