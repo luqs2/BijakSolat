@@ -107,7 +107,6 @@ const submit = () => {
                     <!-- Footer Actions -->
                     <div class="mt-4 flex items-center justify-between">
                         <Link
-                            v-if="canResetPassword"
                             :href="route('password.request')"
                             class="text-sm text-mint-600 hover:text-mint-500 underline"
                         >
@@ -116,7 +115,7 @@ const submit = () => {
 
                         <button
                             type="submit"
-                            class="w-full py-2 px-1 bg-mint-700 hover:bg-mint-800 text-white font-semibold rounded-lg shadow-sm"
+                            class="w-full py-2 px-4 bg-mint-700 hover:bg-mint-800 text-white font-semibold rounded-lg shadow-sm"
                         >
                             Log Masuk
                         </button>
