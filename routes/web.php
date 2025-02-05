@@ -216,14 +216,11 @@ Route::middleware('auth')->group(function () {
                 ->get()
         ]);
     })->name('evaluation.index');
-    Route::post('/objek-penilaian/import', [EvaluationItemController::class, 'import'])->name('evaluation.import');
     Route::post('/evaluation/store', [StudentEvaluationController::class, 'store'])->name('evaluation.store');
-    Route::delete('/objek-penilaian/{id}', [EvaluationItemController::class, 'destroy'])->name('evaluation.destroy');
     Route::get('/stats/fetch', [StatsController::class, 'fetch'])
         ->name('stats.fetch');
 });
 
-Route::post('/evaluation', [EvaluationItemController::class, 'store'])->name('evaluation.store');
 Route::delete('/evaluation-items/{item}', [EvaluationItemController::class, 'destroy'])->name('evaluation.destroy');
 Route::delete('/class/{classId}/clear', [StudentController::class, 'clearClass'])->name('class.clear');
 
