@@ -10,11 +10,6 @@ export default defineConfig({
     }),
     vue(),
   ],
-  server: {
-    host: "0.0.0.0", // Allows access from external devices
-    port: 5173, // Make sure this port is open on your server
-    strictPort: true,
-  },
   build: {
     manifest: true,
     outDir: "public/build",
