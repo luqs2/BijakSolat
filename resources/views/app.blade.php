@@ -18,7 +18,7 @@
     <link rel="manifest" href="/manifest.json">
     <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
     @routes
-    @vite(['resources/css/app.css', 'resources/js/app.js', "resources/js/Pages/{$page['component']}.vue"])
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     @inertiaHead
 </head>
 
