@@ -15,7 +15,8 @@
       flex flex-col
     `">
       <!-- Mobile Menu Button -->
-      <button @click="toggleMobile" class="lg:hidden absolute -right-14 top-4 p-2.5 rounded-lg bg-mint-50 shadow-md z-50">
+      <button @click="toggleMobile"
+        class="lg:hidden absolute -right-14 top-4 p-2.5 rounded-lg bg-mint-50 shadow-md z-50">
         <i class="fas fa-chevron-right h-5 w-5 text-mint-800" v-if="!isMobileOpen"></i>
         <i class="fas fa-times h-5 w-5 text-mint-600" v-else></i>
       </button>
@@ -196,7 +197,7 @@ export default {
       ],
       bottomMenuItems: [
         { name: 'Tetapan', path: '/tetapan', icon: 'fas fa-cog' },
-        { name: 'Bantuan', path: '/bantuan', icon: 'fas fa-question-circle' },
+        //{ name: 'Bantuan', path: '/bantuan', icon: 'fas fa-question-circle' },
         { name: 'Log Keluar', path: '/logout', icon: 'fas fa-sign-out-alt' }
       ],
       guestBottomMenuItems: [
