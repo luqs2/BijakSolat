@@ -335,4 +335,6 @@ Route::post('/check-email', function (Request $request) {
     ]);
 });
 
+Route::get('/students/{year}/{class}', [StudentController::class, 'list'])->name('student.list');
+
 require __DIR__ . '/auth.php';

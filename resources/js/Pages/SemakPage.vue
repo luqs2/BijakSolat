@@ -51,7 +51,7 @@ const submitEvaluation = () => {
 const goBack = () => {
   router.visit(route('student.list', {
     year: props.student.class.year_id,
-    class: props.student.class.id
+    class: props.student.class_id
   }));
 };
 
@@ -77,9 +77,9 @@ const getProgress = () => {
     <div class="p-4 md:p-6 space-y-4 md:space-y-6">
       <!-- Back Button and Title -->
       <div class="flex items-center space-x-4 mb-6">
-        <button @click="goBack" class="p-2 rounded-lg bg-mint-100 hover:bg-mint-200
-                 transition-colors duration-200 flex items-center
-                 justify-center shadow-sm hover:shadow-md">
+        <button @click="goBack"
+                class="p-2 rounded-lg bg-mint-100 hover:bg-mint-200 transition-colors duration-200
+                       flex items-center justify-center shadow-sm hover:shadow-md">
           <i class="fas fa-arrow-left text-mint-600"></i>
         </button>
         <div>
