@@ -54,6 +54,22 @@ const goBack = () => {
     class: props.student.class.id
   }));
 };
+
+const getProgress = () => {
+  let passed = 0;
+  let total = 0;
+
+  props.categories.forEach(category => {
+    category.evaluation_items.forEach(item => {
+      total++;
+      if (scores.value[`item_${item.id}`] === 'Passed') {
+        passed++;
+      }
+    });
+  });
+
+  return { passed, total, remaining: total - passed };
+};
 </script>
 
 <template>
@@ -76,6 +92,25 @@ const goBack = () => {
       <div class="bg-white rounded-lg shadow-md p-6 mb-6">
         <h1 class="text-2xl font-bold text-gray-800">{{ student.name }}</h1>
         <p class="text-gray-600">{{ student.class.year.name }} | {{ student.class.name }}</p>
+
+        <!-- Progress Summary -->
+        <div class="mt-4 flex items-center gap-6">
+          <div class="text-center">
+            <span class="text-2xl font-bold text-green-600">{{ getProgress().passed }}</span>
+            <p class="text-sm text-gray-600">Lulus</p>
+          </div>
+          <div class="text-center">
+            <span class="text-2xl font-bold text-red-600">{{ getProgress().remaining }}</span>
+            <p class="text-sm text-gray-600">Belum Lulus</p>
+          </div>
+          <div class="flex-1">
+            <div class="w-full bg-gray-200 rounded-full h-2.5">
+              <div class="bg-green-600 h-2.5 rounded-full"
+                   :style="`width: ${(getProgress().passed / getProgress().total) * 100}%`">
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Categories with Accordion -->

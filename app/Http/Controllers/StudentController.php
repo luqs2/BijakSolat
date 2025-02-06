@@ -7,6 +7,8 @@ use App\Models\Student;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Inertia\Inertia;
+use App\Models\EvaluationItem;
 
 class StudentController extends Controller
 {
@@ -115,5 +117,22 @@ class StudentController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->withErrors(['error' => 'Failed to clear students']);
         }
+    }
+
+    public function list($yearId, $classId)
+    {
+        $students = Student::where('class_id', $classId)
+            ->with(['evaluations' => function($query) {
+                $query->select('id', 'student_id', 'status');
+            }])
+            ->get();
+
+        $evaluationItems = EvaluationItem::all();
+
+        return Inertia::render('StudentList', [
+            'students' => $students,
+            'evaluationItems' => $evaluationItems,
+            // ...other props
+        ]);
     }
 }

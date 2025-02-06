@@ -6,19 +6,22 @@
 
     <!-- Sidebar -->
     <aside :class="`
-      fixed top-0 left-0 h-screen w-64 z-40
-      ${isExpanded ? 'w-64' : 'w-20'}
+      fixed top-0 left- h-screen z-50
       ${isMobileOpen ? 'translate-x-0' : '-translate-x-full'}
       lg:translate-x-0
-      transition-all duration-300
+      ${isExpanded ? 'w-60' : 'w-17'}
+      transition-all duration-300 ease-in-out
       bg-mint-50 text-mint-900
       flex flex-col
     `">
       <!-- Mobile Menu Button -->
       <button @click="toggleMobile"
-        class="lg:hidden absolute -right-14 top-4 p-2.5 rounded-lg bg-mint-50 shadow-md z-50">
-        <i class="fas fa-chevron-right h-5 w-5 text-mint-800" v-if="!isMobileOpen"></i>
-        <i class="fas fa-times h-5 w-5 text-mint-600" v-else></i>
+        class="lg:hidden absolute -right-7 top-4 p-2.5 rounded-lg bg-mint-50 shadow-md z-50">
+        <i :class="[
+          'fas',
+          isMobileOpen ? 'fa-chevron-left' : 'fa-chevron-right',
+          'h-5 w-5 text-mint-800'
+        ]"></i>
       </button>
 
       <!-- Profile Section or Login Button -->
@@ -117,10 +120,10 @@
 
     <!-- Main Content -->
     <main :class="`
-            min-h-screen
-            ${isExpanded ? 'lg:ml-64' : 'lg:ml-20'}
-            transition-all duration-300
-          `">
+      min-h-screen
+      ${isExpanded ? 'lg:ml-64' : 'lg:ml-16'}
+      transition-all duration-300 ease-in-out
+    `">
       <div class="p-6">
         <slot></slot>
       </div>
@@ -210,7 +213,9 @@ export default {
 
   methods: {
     toggleSidebar() {
-      this.isExpanded = !this.isExpanded
+      this.isExpanded = !this.isExpanded;
+      // Force layout recalculation
+      document.body.offsetHeight;
     },
 
     toggleMobile() {
@@ -249,3 +254,11 @@ export default {
   }
 }
 </script>
+
+<style>
+.transition-all {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+}
+</style>

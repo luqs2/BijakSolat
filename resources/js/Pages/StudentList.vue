@@ -7,7 +7,8 @@ const props = defineProps({
   year: Number,
   classId: Number,
   className: String,
-  students: Array
+  students: Array,
+  evaluationItems: Array
 });
 
 const navigateToSemak = (studentId) => {
@@ -105,6 +106,19 @@ const clearAllStudents = () => {
     });
   }
 };
+
+const getStudentProgress = (student) => {
+  // Get total items from all evaluation categories
+  const totalEvaluationItems = props.evaluationItems?.length || 0;
+
+  // Count evaluations by status
+  const evaluations = student.evaluations || [];
+  const passed = evaluations.filter(e => e.status === 'passed').length;
+  const notPassed = evaluations.filter(e => e.status === 'not_passed').length;
+  const unchecked = totalEvaluationItems - (passed + notPassed);
+
+  return { passed, notPassed, unchecked };
+};
 </script>
 
 <template>
@@ -133,18 +147,32 @@ const clearAllStudents = () => {
       </div>
 
       <!-- Student List -->
-      <div class="bg-white rounded-lg shadow">
-        <div v-if="students.length === 0" class="p-4 text-center text-gray-500">
-          No students found
-        </div>
-        <div v-else class="divide-y divide-gray-200">
-          <div v-for="student in students" :key="student.id"
-            class="p-4 hover:bg-gray-50 flex items-center justify-between">
-            <div class="flex-1">
-              <h3 class="text-lg font-medium text-gray-900">{{ student.name }}</h3>
-              <p class="text-sm text-gray-500">Tarikh: {{ student.tarikh }}</p>
+      <div class="grid gap-4">
+        <div v-for="student in students" :key="student.id"
+             class="bg-white rounded-lg shadow-md p-4">
+          <div class="flex justify-between items-start">
+            <div class="w-full">
+              <h3 class="font-medium text-gray-900">{{ student.name }}</h3>
+
+              <!-- Progress Stats -->
+              <div class="mt-2 flex gap-4 text-sm">
+                <span class="inline-flex items-center text-green-600">
+                  <i class="fas fa-check-circle mr-1"></i>
+                  {{ getStudentProgress(student).passed }} Lulus
+                </span>
+                <span class="inline-flex items-center text-red-600">
+                  <i class="fas fa-times-circle mr-1"></i>
+                  {{ getStudentProgress(student).notPassed }} Tidak Lulus
+                </span>
+                <span class="inline-flex items-center text-gray-600">
+                  <i class="fas fa-clock mr-1"></i>
+                  {{ getStudentProgress(student).unchecked }} Belum Disemak
+                </span>
+              </div>
             </div>
-            <div class="flex space-x-2">
+
+            <!-- Existing Actions -->
+            <div class="flex gap-2">
               <button @click="navigateToSemak(student.id)" class="p-2 text-mint-600 hover:bg-mint-50 rounded-lg">
                 <i class="fas fa-clipboard-check"></i>
               </button>
