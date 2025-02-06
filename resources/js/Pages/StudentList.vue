@@ -108,19 +108,16 @@ const clearAllStudents = () => {
 };
 
 const getStudentProgress = (student) => {
-    const evaluations = student.evaluations || [];
-    const total = student.totalItems || 0;
+  // Get total items from all evaluation categories
+  const totalEvaluationItems = props.evaluationItems?.length || 0;
 
-    const passed = evaluations.filter(e => e.status === 'passed').length;
-    const notPassed = evaluations.filter(e => e.status === 'not_passed').length;
-    const unchecked = total - (passed + notPassed);
+  // Count evaluations by status
+  const evaluations = student.evaluations || [];
+  const passed = evaluations.filter(e => e.status === 'passed').length;
+  const notPassed = evaluations.filter(e => e.status === 'not_passed').length;
+  const unchecked = totalEvaluationItems - (passed + notPassed);
 
-    return {
-        total,
-        passed,
-        notPassed,
-        unchecked
-    };
+  return { passed, notPassed, unchecked };
 };
 </script>
 
@@ -157,21 +154,21 @@ const getStudentProgress = (student) => {
             <div class="w-full">
               <h3 class="font-medium text-gray-900">{{ student.name }}</h3>
 
-              <!-- Progress Stats -->
-              <div class="mt-2 flex flex-wrap gap-4 text-sm">
-                    <span class="inline-flex items-center text-green-600">
-                        <i class="fas fa-check-circle mr-1"></i>
-                        {{ getStudentProgress(student).passed }} Lulus
-                    </span>
-                    <span class="inline-flex items-center text-red-600">
-                        <i class="fas fa-times-circle mr-1"></i>
-                        {{ getStudentProgress(student).notPassed }} Tidak Lulus
-                    </span>
-                    <span class="inline-flex items-center text-gray-600">
-                        <i class="fas fa-clock mr-1"></i>
-                        {{ getStudentProgress(student).unchecked }} Belum Disemak
-                    </span>
-                </div>
+              <!-- Progress Stats
+              <div class="mt-2 flex gap-4 text-sm">
+                <span class="inline-flex items-center text-green-600">
+                  <i class="fas fa-check-circle mr-1"></i>
+                  {{ getStudentProgress(student).passed }} Lulus
+                </span>
+                <span class="inline-flex items-center text-red-600">
+                  <i class="fas fa-times-circle mr-1"></i>
+                  {{ getStudentProgress(student).notPassed }} Tidak Lulus
+                </span>
+                <span class="inline-flex items-center text-gray-600">
+                  <i class="fas fa-clock mr-1"></i>
+                  {{ getStudentProgress(student).unchecked }} Belum Disemak
+                </span>
+              </div> -->
             </div>
 
             <!-- Existing Actions -->

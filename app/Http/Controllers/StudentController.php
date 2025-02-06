@@ -123,21 +123,16 @@ class StudentController extends Controller
     {
         $students = Student::where('class_id', $classId)
             ->with(['evaluations' => function($query) {
-                $query->select('id', 'student_id', 'evaluation_item_id', 'status');
+                $query->select('id', 'student_id', 'status');
             }])
             ->get();
 
-        $totalItems = EvaluationItem::count();
+        $evaluationItems = EvaluationItem::all();
 
         return Inertia::render('StudentList', [
-            'students' => $students->map(function($student) use ($totalItems) {
-                return [
-                    'id' => $student->id,
-                    'name' => $student->name,
-                    'evaluations' => $student->evaluations,
-                    'totalItems' => $totalItems
-                ];
-            })
+            'students' => $students,
+            'evaluationItems' => $evaluationItems,
+            // ...other props
         ]);
     }
 }
