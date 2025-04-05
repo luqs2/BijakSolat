@@ -23,29 +23,29 @@ const verificationLinkSent = computed(
 
 <template>
     <GuestLayout>
-        <Head title="Email Verification" />
+        <Head title="Pengesahan Email" />
 
-        <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
-            Thanks for signing up! Before getting started, could you verify your
-            email address by clicking on the link we just emailed to you? If you
-            didn't receive the email, we will gladly send you another.
+        <div class="mb-4 text-sm text-gray-600">
+            Terima kasih kerana mendaftar! Sebelum memulakan, sila sahkan alamat email anda
+            dengan mengklik pautan yang telah kami hantar ke email anda. Jika anda
+            tidak menerima email tersebut, kami akan menghantar pautan yang baru.
         </div>
 
         <div
-            class="mb-4 text-sm font-medium text-green-600 dark:text-green-400"
+            class="mb-4 text-sm font-medium text-mint-600"
             v-if="verificationLinkSent"
         >
-            A new verification link has been sent to the email address you
-            provided during registration.
+            Pautan pengesahan baru telah dihantar ke alamat email yang anda
+            berikan semasa pendaftaran.
         </div>
 
         <form @submit.prevent="submit">
             <div class="mt-4 flex items-center justify-between">
                 <PrimaryButton
-                    :class="{ 'opacity-25': form.processing }"
+                    :class="{ 'opacity-25': form.processing, 'bg-mint-600 hover:bg-mint-700': !form.processing }"
                     :disabled="form.processing"
                 >
-                    Resend Verification Email
+                    Hantar Semula Email Pengesahan
                 </PrimaryButton>
 
                 <Link

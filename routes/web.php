@@ -26,6 +26,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 Route::get('/', function () {
@@ -36,6 +37,32 @@ Route::get('/', function () {
         'phpVersion' => PHP_VERSION,
     ]);
 });
+
+Route::get('/email/verify', function () {
+    return Inertia::render('Auth/VerifyEmail');
+})->middleware('auth')->name('verification.notice');
+
+Route::get('/email/verify/{id}/{hash}', function (Request $request) {
+    if ($request->user()->hasVerifiedEmail()) {
+        return redirect()->intended(route('dashboard', absolute: false));
+    }
+
+    if ($request->user()->markEmailAsVerified()) {
+        event(new \Illuminate\Auth\Events\Verified($request->user()));
+    }
+
+    return redirect()->intended(route('dashboard', absolute: false));
+})->middleware(['auth', 'signed'])->name('verification.verify');
+
+Route::post('/email/verification-notification', function (Request $request) {
+    if ($request->user()->hasVerifiedEmail()) {
+        return redirect()->intended(route('dashboard', absolute: false));
+    }
+
+    $request->user()->sendEmailVerificationNotification();
+
+    return back()->with('status', 'verification-link-sent');
+})->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
 Route::get('/dashboard', function () {
     $teacherClasses = Auth::user()->classes()
@@ -239,6 +266,18 @@ Route::post('/evaluation/import', [EvaluationItemController::class, 'importCsv']
 
 
 Route::post('/evaluation', [EvaluationItemController::class, 'store'])->name('evaluation.item.store');
+
+Route::get('/test-email', function () {
+    try {
+        Mail::raw('Test email from BijakSolat', function($message) {
+            $message->to('luqmanhaqim21@gmail.com')
+                    ->subject('BijakSolat Email Test');
+        });
+        return 'Email sent successfully!';
+    } catch (\Exception $e) {
+        return 'Email error: ' . $e->getMessage();
+    }
+});
 
 Route::get('/test-cloudinary', function () {
     try {
