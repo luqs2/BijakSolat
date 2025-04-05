@@ -51,18 +51,11 @@ const avatarPreview = ref(null);
 const avatarFile = ref(null);
 const showDeleteModal = ref(false);
 
-const deleteForm = useForm({
-  password: ''
-});
-
 const deleteAccount = () => {
-  deleteForm.delete(route('profile.destroy'), {
+  router.delete(route('profile.destroy'), {
     onSuccess: () => {
       router.visit(route('login'));
     },
-    onError: () => {
-      deleteForm.reset();
-    }
   });
 };
 
@@ -253,18 +246,6 @@ onUnmounted(() => {
         <p class="text-gray-600 mb-4">
           Setelah akaun anda dipadam, semua data akan dihapuskan secara kekal.
         </p>
-        <div class="mb-4">
-          <InputLabel for="delete-password" value="Kata Laluan" />
-          <TextInput
-            id="delete-password"
-            v-model="deleteForm.password"
-            type="password"
-            class="mt-1 block w-full"
-            placeholder="Masukkan kata laluan anda"
-            required
-          />
-          <InputError :message="deleteForm.errors.password" class="mt-2" />
-        </div>
         <div class="flex justify-end space-x-4">
           <button
             @click="showDeleteModal = false"
