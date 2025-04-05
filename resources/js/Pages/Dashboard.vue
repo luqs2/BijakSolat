@@ -244,9 +244,9 @@ onMounted(() => {
                 </div>
               </div>
             </div>
-            <div v-else class="text-center py-6 text-sm text-gray-500">
-              Loading statistics...
-            </div>
+          </div>
+          <div v-else class="text-center py-6 text-sm text-gray-500">
+            Loading statistics...
           </div>
         </div>
       </div>
