@@ -1,4 +1,5 @@
 <script setup>
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Checkbox from '@/Components/Checkbox.vue';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import InputError from '@/Components/InputError.vue';
@@ -30,6 +31,7 @@ const submit = () => {
 </script>
 
 <template>
+    <GuestLayout>
         <Head title="Log Masuk" />
 
         <div class="min-h-screen flex w-full flex-col justify-center items-center pt-6 sm:pt-0 bg-mint-50">
@@ -77,22 +79,6 @@ const submit = () => {
                         <InputError class="mt-2" :message="form.errors.password" />
                     </div>
 
-                    <!-- Error Messages -->
-                    <div v-if="form.errors.email || form.errors.password" class="mt-4">
-                        <p class="text-red-500 text-sm" v-if="form.errors.email">
-                            {{ form.errors.email }}
-                        </p>
-                        <p class="text-red-500 text-sm" v-if="form.errors.password">
-                            {{ form.errors.password }}
-                        </p>
-                    </div>
-
-                    <div v-if="form.errors.general" class="mt-4">
-                        <p class="text-red-500 text-sm">
-                            {{ form.errors.general }}
-                        </p>
-                    </div>
-
                     <!-- Remember Me Checkbox -->
                     <div class="mt-4 block">
                         <label class="flex items-center">
@@ -112,12 +98,9 @@ const submit = () => {
                             Lupa kata laluan?
                         </Link>
 
-                        <button
-                            type="submit"
-                            class="w-full py-2 px-4 bg-mint-700 hover:bg-mint-800 text-white font-semibold rounded-lg shadow-sm"
-                        >
+                        <PrimaryButton class="ml-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                             Log Masuk
-                        </button>
+                        </PrimaryButton>
                     </div>
 
                     <!-- Register Link -->
@@ -132,9 +115,9 @@ const submit = () => {
                 </form>
             </div>
         </div>
+    </GuestLayout>
 </template>
 
-<!-- Add style section -->
 <style>
 .form-label {
     @apply text-emerald-700 font-medium;

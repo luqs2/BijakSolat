@@ -237,39 +237,7 @@ Route::post('/evaluation/import', [EvaluationItemController::class, 'importCsv']
 Route::post('/evaluation', [EvaluationItemController::class, 'store'])->name('evaluation.item.store');
 
 Route::get('/test-email', function () {
-    try {
-        \Illuminate\Support\Facades\Log::info('Starting email test with following config:', [
-            'mailer' => config('mail.default'),
-            'host' => config('mail.mailers.smtp.host'),
-            'port' => config('mail.mailers.smtp.port'),
-            'encryption' => config('mail.mailers.smtp.encryption'),
-            'username' => config('mail.mailers.smtp.username'),
-            'from_address' => config('mail.from.address'),
-            'verify_peer' => config('mail.mailers.smtp.verify_peer'),
-            'verify_peer_name' => config('mail.mailers.smtp.verify_peer_name'),
-            'allow_self_signed' => config('mail.mailers.smtp.allow_self_signed'),
-            'auth_mode' => config('mail.mailers.smtp.auth_mode')
-        ]);
-        
-        // Create a test email
-        \Illuminate\Support\Facades\Mail::raw('Test email from BijakSolat at ' . now(), function($message) {
-            $message->to('luqmanhaqim21@gmail.com')
-                    ->from(config('mail.from.address'), config('mail.from.name'))
-                    ->subject('BijakSolat Email Test');
-        });
-        
-        \Illuminate\Support\Facades\Log::info('Test email sent successfully');
-        return 'Email sent successfully! Check your inbox and logs.';
-        
-    } catch (\Exception $e) {
-        \Illuminate\Support\Facades\Log::error('Email error:', [
-            'error' => $e->getMessage(),
-            'trace' => $e->getTraceAsString(),
-            'file' => $e->getFile(),
-            'line' => $e->getLine()
-        ]);
-        return 'Email sending failed: ' . $e->getMessage();
-    }
+    return 'Email functionality is temporarily disabled. Using array mailer for development.';
 });
 
 Route::get('/test-cloudinary', function () {
