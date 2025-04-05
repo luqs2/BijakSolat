@@ -22,7 +22,6 @@ const verificationLinkSent = computed(
 </script>
 
 <template>
-    <AppLayout>
         <Head title="Pengesahan Email" />
 
         <div class="mb-4 text-sm text-gray-600">
@@ -57,5 +56,4 @@ const verificationLinkSent = computed(
                 >
             </div>
         </form>
-    </AppLayout>
 </template>
