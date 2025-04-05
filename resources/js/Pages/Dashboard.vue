@@ -133,8 +133,8 @@ onMounted(() => {
 </script>
 
 <template>
-
-      <div class="p-4 md:p-6 space-y-4 md:space-y-6">
+  <AppLayout>
+    <div class="p-4 md:p-6 space-y-4 md:space-y-6">
         <!-- Greeting Section -->
         <div class="bg-white rounded-lg shadow-md p-4 md:p-6">
           <h1 class="text-xl md:text-2xl font-bold text-gray-800">
@@ -250,5 +250,6 @@ onMounted(() => {
           </div>
         </div>
       </div>
-    
-  </template>
+    </div>
+  </AppLayout>
+</template>

@@ -247,33 +247,51 @@ Route::get('/test-email', function () {
     try {
         \Illuminate\Support\Facades\Log::info('Starting email test...');
         
-        // Test SMTP connection
-        $transport = new \Symfony\Component\Mailer\Transport\Smtp\EsmtpTransport(
-            config('mail.mailers.smtp.host'),
-            config('mail.mailers.smtp.port'),
-            true
-        );
-        $transport->setUsername(config('mail.mailers.smtp.username'));
-        $transport->setPassword(config('mail.mailers.smtp.password'));
-        
-        \Illuminate\Support\Facades\Log::info('SMTP Configuration:', [
+        // Log all mail configuration
+        \Illuminate\Support\Facades\Log::info('Mail Configuration:', [
+            'mailer' => config('mail.default'),
             'host' => config('mail.mailers.smtp.host'),
             'port' => config('mail.mailers.smtp.port'),
             'username' => config('mail.mailers.smtp.username'),
             'encryption' => config('mail.mailers.smtp.encryption'),
             'from_address' => config('mail.from.address'),
+            'from_name' => config('mail.from.name'),
+            'verify_peer' => config('mail.mailers.smtp.verify_peer'),
         ]);
-
+        
+        // Create mailer instance
+        $mailer = app('mailer');
+        \Illuminate\Support\Facades\Log::info('Mailer instance created');
+        
+        // Create transport
+        $transport = new \Symfony\Component\Mailer\Transport\Smtp\EsmtpTransport(
+            config('mail.mailers.smtp.host'),
+            config('mail.mailers.smtp.port'),
+            config('mail.mailers.smtp.encryption') === 'tls'
+        );
+        $transport->setUsername(config('mail.mailers.smtp.username'));
+        $transport->setPassword(config('mail.mailers.smtp.password'));
+        
+        // Test transport connection
+        \Illuminate\Support\Facades\Log::info('Testing SMTP connection...');
+        $transport->start();
+        \Illuminate\Support\Facades\Log::info('SMTP connection successful');
+        
+        // Send test email
+        \Illuminate\Support\Facades\Log::info('Sending test email...');
         Mail::raw('Test email from BijakSolat at ' . now(), function($message) {
             $message->to('luqmanhaqim21@gmail.com')
                     ->subject('BijakSolat Email Test');
         });
+        \Illuminate\Support\Facades\Log::info('Email sent successfully');
         
         return 'Email sent successfully! Check logs for details.';
     } catch (\Exception $e) {
         \Illuminate\Support\Facades\Log::error('Email error:', [
             'error' => $e->getMessage(),
-            'trace' => $e->getTraceAsString()
+            'trace' => $e->getTraceAsString(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine()
         ]);
         return 'Email error: ' . $e->getMessage();
     }
