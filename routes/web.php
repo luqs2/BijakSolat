@@ -38,8 +38,6 @@ Route::get('/', function () {
     ]);
 });
 
-
-
 Route::get('/dashboard', function () {
     $teacherClasses = Auth::user()->classes()
         ->with('students') // Now this relationship will work
@@ -139,8 +137,6 @@ Route::post('/submit-evaluation', function () {
     return redirect()->back();
 })->name('submit.evaluation');
 
-
-
 Route::get('/kemaskini/tahun/{year}/add-student', function ($year) {
     return Inertia::render('AddStudent', ['year' => $year]);
 })->name('add.student');
@@ -209,7 +205,6 @@ Route::middleware(['auth'])->group(function () {
         ->middleware('auth');
 });
 
-
 Route::middleware('auth')->group(function () {
     Route::get('/objek-penilaian', function (Request $request) {
         return Inertia::render('EvaluationObject', [
@@ -239,7 +234,6 @@ Route::post('/evaluation/import', [EvaluationItemController::class, 'importCsv']
     ->name('evaluation.import')
     ->middleware(['auth']);
 
-
 Route::post('/evaluation', [EvaluationItemController::class, 'store'])->name('evaluation.item.store');
 
 Route::get('/test-email', function () {
@@ -251,12 +245,16 @@ Route::get('/test-email', function () {
             'encryption' => config('mail.mailers.smtp.encryption'),
             'username' => config('mail.mailers.smtp.username'),
             'from_address' => config('mail.from.address'),
-            'verify_peer' => config('mail.mailers.smtp.verify_peer', 'not set')
+            'verify_peer' => config('mail.mailers.smtp.verify_peer'),
+            'verify_peer_name' => config('mail.mailers.smtp.verify_peer_name'),
+            'allow_self_signed' => config('mail.mailers.smtp.allow_self_signed'),
+            'auth_mode' => config('mail.mailers.smtp.auth_mode')
         ]);
         
         // Create a test email
         \Illuminate\Support\Facades\Mail::raw('Test email from BijakSolat at ' . now(), function($message) {
             $message->to('luqmanhaqim21@gmail.com')
+                    ->from(config('mail.from.address'), config('mail.from.name'))
                     ->subject('BijakSolat Email Test');
         });
         
@@ -273,6 +271,7 @@ Route::get('/test-email', function () {
         return 'Email sending failed: ' . $e->getMessage();
     }
 });
+
 Route::get('/test-cloudinary', function () {
     try {
         $cloudinary = new \App\Services\CloudinaryService();
@@ -294,8 +293,6 @@ Route::delete('/evaluation/clear/{year}', [EvaluationItemController::class, 'cle
 Route::get('/offline', function () {
     return view('offline');
 });
-
-
 
 Route::post('/verify-email', function (Request $request) {
     $user = User::where('email', $request->email)->first();

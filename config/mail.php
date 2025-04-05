@@ -39,21 +39,17 @@ return [
 
         'smtp' => [
             'transport' => 'smtp',
-            'scheme' => env('MAIL_SCHEME', 'tls'),
-            'url' => env('MAIL_URL'),
-            'host' => env('MAIL_HOST', 'smtp.gmail.com'),
+            'host' => env('MAIL_HOST', 'smtp-relay.brevo.com'),
             'port' => env('MAIL_PORT', 587),
+            'encryption' => env('MAIL_ENCRYPTION', 'tls'),
             'username' => env('MAIL_USERNAME'),
             'password' => env('MAIL_PASSWORD'),
-            'encryption' => env('MAIL_ENCRYPTION', 'tls'),
-            'timeout' => null,
-            'auth_mode' => null,
-            'verify_peer' => false,
-            'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url(env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
             'timeout' => env('MAIL_TIMEOUT', 30),
-    'verify_peer' => env('MAIL_VERIFY_PEER', false),
-    'verify_peer_name' => env('MAIL_VERIFY_PEER_NAME', false),
-    'allow_self_signed' => env('MAIL_ALLOW_SELF_SIGNED', true),
+            'verify_peer' => env('MAIL_VERIFY_PEER', false),
+            'verify_peer_name' => env('MAIL_VERIFY_PEER_NAME', false),
+            'allow_self_signed' => env('MAIL_ALLOW_SELF_SIGNED', true),
+            'auth_mode' => env('MAIL_AUTH_MODE', 'login'),
+            'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url(env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
         ],
 
         'ses' => [
