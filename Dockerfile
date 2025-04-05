@@ -59,4 +59,4 @@ RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 # Configure container startup
 ENTRYPOINT ["docker-entrypoint.sh"]
-CMD ["php", "-S", "0.0.0.0:$PORT", "-t", "public/"]
+CMD ["/bin/sh", "-c", "php -S 0.0.0.0:${PORT} -t public/"]
