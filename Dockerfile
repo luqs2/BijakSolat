@@ -27,6 +27,12 @@ WORKDIR /var/www
 # Copy existing application directory
 COPY . /var/www
 
+# Create storage directory structure
+RUN mkdir -p /var/www/storage/framework/cache/data \
+    && mkdir -p /var/www/storage/framework/sessions \
+    && mkdir -p /var/www/storage/framework/testing \
+    && mkdir -p /var/www/storage/framework/views
+
 # Install dependencies
 RUN composer install --no-interaction --optimize-autoloader --no-dev
 
@@ -34,10 +40,18 @@ RUN composer install --no-interaction --optimize-autoloader --no-dev
 RUN npm install && npm run build
 
 # Set permissions
-RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
+RUN chmod -R 775 /var/www/storage /var/www/bootstrap/cache \
+    && chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
+
+# Copy environment file
+RUN cp .env.example .env
 
 # Expose port
 EXPOSE ${PORT}
 
-# Start command
-CMD php artisan serve --host=0.0.0.0 --port=${PORT}
+# Start script
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=${PORT}"]
