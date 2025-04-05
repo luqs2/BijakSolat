@@ -47,12 +47,16 @@ RUN chmod -R 775 /var/www/storage /var/www/bootstrap/cache \
 # Copy environment file
 RUN cp .env.example .env
 
+# Set default port
+ENV PORT=8000
+
 # Expose port
 EXPOSE ${PORT}
 
-# Start script
+# Copy and setup entrypoint script
 COPY docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
+# Configure container startup
 ENTRYPOINT ["docker-entrypoint.sh"]
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=${PORT}"]
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=$PORT"]
