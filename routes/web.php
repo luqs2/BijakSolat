@@ -26,7 +26,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 Route::get('/', function () {
@@ -55,7 +54,6 @@ Route::get('/dashboard', function () {
         'teacherClasses' => $teacherClasses
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
-
 Route::middleware('auth')->group(function () {
     Route::get('/login-page', function () {
         return Inertia::render('Login', [
@@ -137,6 +135,8 @@ Route::post('/submit-evaluation', function () {
     return redirect()->back();
 })->name('submit.evaluation');
 
+
+
 Route::get('/kemaskini/tahun/{year}/add-student', function ($year) {
     return Inertia::render('AddStudent', ['year' => $year]);
 })->name('add.student');
@@ -158,14 +158,16 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/statistik', function () {
-        return Inertia::render('Statistik', [
-            'years' => Year::orderBy('name')->get(),
-            'classes' => ClassRoom::with('year')
-                ->orderBy('name')
-                ->get()
-        ]);
-    })->name('statistik');
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/statistik', function () {
+            return Inertia::render('Statistik', [
+                'years' => Year::orderBy('name')->get(),
+                'classes' => ClassRoom::with('year')
+                    ->orderBy('name')
+                    ->get()
+            ]);
+        })->name('statistik');
+    });
 });
 
 Route::post('/years', [YearController::class, 'store'])->name('years.store');
@@ -196,7 +198,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::put('/password', [ProfileController::class, 'updatePassword'])->name('password.update');
     Route::post('/profile/avatar', [ProfileController::class, 'updateAvatar'])->name('profile.avatar.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::post('/profile/avatar', [ProfileController::class, 'updateAvatar'])
         ->name('profile.avatar.update')
         ->middleware(['auth', 'verified']);
@@ -204,6 +206,7 @@ Route::middleware(['auth'])->group(function () {
         ->name('profile.avatar.update')
         ->middleware('auth');
 });
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/objek-penilaian', function (Request $request) {
@@ -234,11 +237,8 @@ Route::post('/evaluation/import', [EvaluationItemController::class, 'importCsv']
     ->name('evaluation.import')
     ->middleware(['auth']);
 
-Route::post('/evaluation', [EvaluationItemController::class, 'store'])->name('evaluation.item.store');
 
-Route::get('/test-email', function () {
-    return 'Email functionality is temporarily disabled. Using array mailer for development.';
-});
+Route::post('/evaluation', [EvaluationItemController::class, 'store'])->name('evaluation.item.store');
 
 Route::get('/test-cloudinary', function () {
     try {
@@ -261,6 +261,8 @@ Route::delete('/evaluation/clear/{year}', [EvaluationItemController::class, 'cle
 Route::get('/offline', function () {
     return view('offline');
 });
+
+
 
 Route::post('/verify-email', function (Request $request) {
     $user = User::where('email', $request->email)->first();

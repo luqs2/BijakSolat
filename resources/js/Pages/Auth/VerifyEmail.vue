@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue';
-import AppLayout from '@/Layouts/AppLayout.vue';
+import GuestLayout from '@/Layouts/GuestLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 
@@ -22,29 +22,30 @@ const verificationLinkSent = computed(
 </script>
 
 <template>
-        <Head title="Pengesahan Email" />
+    <GuestLayout>
+        <Head title="Email Verification" />
 
-        <div class="mb-4 text-sm text-gray-600">
-            Terima kasih kerana mendaftar! Sebelum memulakan, sila sahkan alamat email anda
-            dengan mengklik pautan yang telah kami hantar ke email anda. Jika anda
-            tidak menerima email tersebut, kami akan menghantar pautan yang baru.
+        <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
+            Thanks for signing up! Before getting started, could you verify your
+            email address by clicking on the link we just emailed to you? If you
+            didn't receive the email, we will gladly send you another.
         </div>
 
         <div
-            class="mb-4 text-sm font-medium text-mint-600"
+            class="mb-4 text-sm font-medium text-green-600 dark:text-green-400"
             v-if="verificationLinkSent"
         >
-            Pautan pengesahan baru telah dihantar ke alamat email yang anda
-            berikan semasa pendaftaran.
+            A new verification link has been sent to the email address you
+            provided during registration.
         </div>
 
         <form @submit.prevent="submit">
             <div class="mt-4 flex items-center justify-between">
                 <PrimaryButton
-                    :class="{ 'opacity-25': form.processing, 'bg-mint-600 hover:bg-mint-700': !form.processing }"
+                    :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing"
                 >
-                    Hantar Semula Email Pengesahan
+                    Resend Verification Email
                 </PrimaryButton>
 
                 <Link
@@ -56,4 +57,5 @@ const verificationLinkSent = computed(
                 >
             </div>
         </form>
+    </GuestLayout>
 </template>
