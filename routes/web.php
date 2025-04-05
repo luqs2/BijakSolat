@@ -236,6 +236,9 @@ Route::post('/evaluation/import', [EvaluationItemController::class, 'importCsv']
     ->name('evaluation.import')
     ->middleware(['auth']);
 
+
+Route::post('/evaluation', [EvaluationItemController::class, 'store'])->name('evaluation.store');
+
 Route::get('/test-cloudinary', function () {
     try {
         $cloudinary = new \App\Services\CloudinaryService();

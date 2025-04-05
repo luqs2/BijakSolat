@@ -97,17 +97,20 @@ const selectedCategory = ref(null);
 const form = useForm({
     category: '',
     categoryId: null,
-    year_id: selectedYear,
+    year_id: selectedYear.value, // Use .value here
     items: [{ title: '', type: 'RUKUN', sequence: 1 }]
 });
 
 watch(selectedCategory, (newVal) => {
     if (newVal) {
-        const category = props.evaluationData.find(c => c.id === newVal);
+        const category = props.existingCategories.find(c => c.id === newVal);
         if (category) {
             form.categoryId = category.id;
             form.category = category.name;
         }
+    } else {
+        form.categoryId = null;
+        form.category = '';
     }
 });
 
@@ -120,13 +123,44 @@ const addItem = () => {
 };
 
 const submitForm = () => {
+    // Set the current year_id
     form.year_id = selectedYear.value;
 
+    // Prepare the form data based on category selection
+    if (!isNewCategory.value) {
+        form.category = ''; // Clear category name when using existing category
+    } else {
+        form.categoryId = null; // Clear categoryId when creating new category
+    }
+
+    // Validate form
+    if (isNewCategory.value && !form.category) {
+        alert('Please enter a category name');
+        return;
+    }
+    if (!isNewCategory.value && !form.categoryId) {
+        alert('Please select a category');
+        return;
+    }
+    if (!form.items.some(item => item.title.trim())) {
+        alert('Please add at least one item with a title');
+        return;
+    }
+
+    // Submit the form
     form.post(route('evaluation.store'), {
         onSuccess: () => {
             showAddModal.value = false;
             form.reset();
+            // Reset the category selection
+            isNewCategory.value = true;
+            selectedCategory.value = null;
+            // Reload the page to show new data
             window.location.reload();
+        },
+        onError: (errors) => {
+            console.error('Form submission failed:', errors);
+            alert('Failed to save items. Please check your input and try again.');
         }
     });
 };
