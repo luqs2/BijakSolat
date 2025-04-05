@@ -1,6 +1,7 @@
 <!-- Tetapan.vue -->
 <script setup>
 import { ref, onUnmounted } from 'vue';
+import Modal from '@/Components/Modal.vue';
 import { useForm, router } from '@inertiajs/vue3';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
@@ -48,6 +49,15 @@ const updatePassword = () => {
 // Profile Picture Upload
 const avatarPreview = ref(null);
 const avatarFile = ref(null);
+const showDeleteModal = ref(false);
+
+const deleteAccount = () => {
+  router.delete(route('profile.destroy'), {
+    onSuccess: () => {
+      router.visit(route('login'));
+    },
+  });
+};
 
 const handleAvatarUpload = async (event) => {
   const file = event.target.files[0];
@@ -213,6 +223,44 @@ onUnmounted(() => {
           </div>
         </form>
       </div>
+
+      <!-- Delete Account Section -->
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-semibold mb-4 text-red-600">Padam Akaun</h2>
+        <p class="text-gray-600 mb-4">Setelah akaun anda dipadam, semua data akan dihapuskan secara kekal.</p>
+        <button
+          @click="showDeleteModal = true"
+          class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+        >
+          Padam Akaun
+        </button>
+      </div>
     </div>
+
+    <!-- Delete Account Confirmation Modal -->
+    <Modal :show="showDeleteModal" @close="showDeleteModal = false">
+      <div class="p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">
+          Adakah anda pasti untuk memadam akaun ini?
+        </h2>
+        <p class="text-gray-600 mb-4">
+          Setelah akaun anda dipadam, semua data akan dihapuskan secara kekal.
+        </p>
+        <div class="flex justify-end space-x-4">
+          <button
+            @click="showDeleteModal = false"
+            class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
+          >
+            Tidak
+          </button>
+          <button
+            @click="deleteAccount"
+            class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+          >
+            Ya
+          </button>
+        </div>
+      </div>
+    </Modal>
   </div>
 </template>

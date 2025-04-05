@@ -98,51 +98,30 @@ class ProfileController extends Controller
                 'fillable' => $user->getFillable()
             ]);
 
-            // Attempt update and log result
-            $updateResult = $user->update([
-                'avatar' => $result['secure_url']
-            ]);
+            // Update user avatar
+            $user->update(['avatar' => $result['secure_url']]);
 
-            Log::info('Database update attempt', [
-                'success' => $updateResult,
-                'new_avatar_url' => $result['secure_url'],
-                'user_id' => $user->id
-            ]);
-
-            // Double check the update
-            $updatedUser = $user->fresh();
-            Log::info('User after update', [
-                'avatar_value' => $updatedUser->avatar,
-                'user_id' => $updatedUser->id
-            ]);
-
-            if (!$updateResult) {
-                throw new \Exception('Failed to update user record');
-            }
-
-            return back()->with('success', 'Profile picture updated successfully');
+            return back()->with('success', 'Gambar profil berjaya dikemaskini.');
         } catch (\Exception $e) {
             Log::error('Avatar update failed', [
-                'error_message' => $e->getMessage(),
-                'file' => $request->hasFile('avatar') ? 'present' : 'missing',
-                'trace' => $e->getTraceAsString()
+                'error' => $e->getMessage(),
+                'user_id' => auth()->id() ?? 'not set'
             ]);
-            return back()->withErrors(['avatar' => 'Upload failed: ' . $e->getMessage()]);
+
+            return back()->withErrors(['avatar' => 'Gagal mengemaskini gambar profil.']);
         }
     }
 
     public function destroy(Request $request): RedirectResponse
     {
-        $request->validate([
-            'password' => ['required', 'current_password'],
-        ]);
-
         $user = $request->user();
+
         Auth::logout();
+
         $user->delete();
+
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
-    }
 }
