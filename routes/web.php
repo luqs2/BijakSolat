@@ -219,7 +219,7 @@ Route::middleware('auth')->group(function () {
                 ->get()
         ]);
     })->name('evaluation.index');
-    Route::post('/evaluation/store', [StudentEvaluationController::class, 'store'])->name('evaluation.store');
+    Route::post('/evaluation/store', [StudentEvaluationController::class, 'store'])->name('student.evaluation.store');
     Route::get('/stats/fetch', [StatsController::class, 'fetch'])
         ->name('stats.fetch');
 });
@@ -237,7 +237,7 @@ Route::post('/evaluation/import', [EvaluationItemController::class, 'importCsv']
     ->middleware(['auth']);
 
 
-Route::post('/evaluation', [EvaluationItemController::class, 'store'])->name('evaluation.store');
+Route::post('/evaluation', [EvaluationItemController::class, 'store'])->name('evaluation.item.store');
 
 Route::get('/test-cloudinary', function () {
     try {
