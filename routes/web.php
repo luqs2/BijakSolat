@@ -57,6 +57,7 @@ Route::get('/dashboard', function () {
         'teacherClasses' => $teacherClasses
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
+
 Route::middleware('auth')->group(function () {
     Route::get('/login-page', function () {
         return Inertia::render('Login', [
@@ -161,16 +162,14 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::middleware(['auth'])->group(function () {
-        Route::get('/statistik', function () {
-            return Inertia::render('Statistik', [
-                'years' => Year::orderBy('name')->get(),
-                'classes' => ClassRoom::with('year')
-                    ->orderBy('name')
-                    ->get()
-            ]);
-        })->name('statistik');
-    });
+    Route::get('/statistik', function () {
+        return Inertia::render('Statistik', [
+            'years' => Year::orderBy('name')->get(),
+            'classes' => ClassRoom::with('year')
+                ->orderBy('name')
+                ->get()
+        ]);
+    })->name('statistik');
 });
 
 Route::post('/years', [YearController::class, 'store'])->name('years.store');
@@ -201,7 +200,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::put('/password', [ProfileController::class, 'updatePassword'])->name('password.update');
     Route::post('/profile/avatar', [ProfileController::class, 'updateAvatar'])->name('profile.avatar.update');
-Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::post('/profile/avatar', [ProfileController::class, 'updateAvatar'])
         ->name('profile.avatar.update')
         ->middleware(['auth', 'verified']);
@@ -247,45 +246,15 @@ Route::get('/test-email', function () {
     try {
         \Illuminate\Support\Facades\Log::info('Starting email test...');
         
-        // Log all mail configuration
-        \Illuminate\Support\Facades\Log::info('Mail Configuration:', [
-            'mailer' => config('mail.default'),
-            'host' => config('mail.mailers.smtp.host'),
-            'port' => config('mail.mailers.smtp.port'),
-            'username' => config('mail.mailers.smtp.username'),
-            'encryption' => config('mail.mailers.smtp.encryption'),
-            'from_address' => config('mail.from.address'),
-            'from_name' => config('mail.from.name'),
-            'verify_peer' => config('mail.mailers.smtp.verify_peer'),
-        ]);
-        
-        // Create mailer instance
-        $mailer = app('mailer');
-        \Illuminate\Support\Facades\Log::info('Mailer instance created');
-        
-        // Create transport
-        $transport = new \Symfony\Component\Mailer\Transport\Smtp\EsmtpTransport(
-            config('mail.mailers.smtp.host'),
-            config('mail.mailers.smtp.port'),
-            config('mail.mailers.smtp.encryption') === 'tls'
-        );
-        $transport->setUsername(config('mail.mailers.smtp.username'));
-        $transport->setPassword(config('mail.mailers.smtp.password'));
-        
-        // Test transport connection
-        \Illuminate\Support\Facades\Log::info('Testing SMTP connection...');
-        $transport->start();
-        \Illuminate\Support\Facades\Log::info('SMTP connection successful');
-        
-        // Send test email
-        \Illuminate\Support\Facades\Log::info('Sending test email...');
-        Mail::raw('Test email from BijakSolat at ' . now(), function($message) {
+        // Create a test email
+        \Illuminate\Support\Facades\Mail::raw('Test email from BijakSolat', function($message) {
             $message->to('luqmanhaqim21@gmail.com')
                     ->subject('BijakSolat Email Test');
         });
-        \Illuminate\Support\Facades\Log::info('Email sent successfully');
         
-        return 'Email sent successfully! Check logs for details.';
+        \Illuminate\Support\Facades\Log::info('Test email sent successfully');
+        return 'Email sent successfully! Check your inbox.';
+        
     } catch (\Exception $e) {
         \Illuminate\Support\Facades\Log::error('Email error:', [
             'error' => $e->getMessage(),
@@ -293,7 +262,7 @@ Route::get('/test-email', function () {
             'file' => $e->getFile(),
             'line' => $e->getLine()
         ]);
-        return 'Email error: ' . $e->getMessage();
+        return 'Email sending failed: ' . $e->getMessage();
     }
 });
 
