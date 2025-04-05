@@ -173,7 +173,7 @@ onMounted(() => {
                class="bg-white rounded-lg shadow-md p-4 md:p-6">
             <h3 class="text-lg md:text-xl font-semibold mb-4">{{ cls.name }}</h3>
 
-            <template v-if="classStats[cls.id]">
+            <div v-if="classStats[cls.id]">
               <!-- Status Cards - Stack on mobile -->
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
                 <div class="bg-green-50 p-3 md:p-4 rounded-lg">
@@ -214,7 +214,7 @@ onMounted(() => {
               </div>
 
               <!-- Charts and Categories - Stack on mobile -->
-              <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mt-4">
                 <!-- Pie Chart -->
                 <div class="bg-white p-4 rounded-lg shadow-sm">
                   <h4 class="text-base md:text-lg font-semibold mb-4">Keseluruhan</h4>
@@ -243,10 +243,10 @@ onMounted(() => {
                   </div>
                 </div>
               </div>
-            </template>
-          </div>
-          <div v-else class="text-center py-6 text-sm text-gray-500">
-            Loading statistics...
+            </div>
+            <div v-else class="text-center py-6 text-sm text-gray-500">
+              Loading statistics...
+            </div>
           </div>
         </div>
       </div>
