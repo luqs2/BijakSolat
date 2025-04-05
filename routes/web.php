@@ -244,16 +244,24 @@ Route::post('/evaluation', [EvaluationItemController::class, 'store'])->name('ev
 
 Route::get('/test-email', function () {
     try {
-        \Illuminate\Support\Facades\Log::info('Starting email test...');
+        \Illuminate\Support\Facades\Log::info('Starting email test with following config:', [
+            'mailer' => config('mail.default'),
+            'host' => config('mail.mailers.smtp.host'),
+            'port' => config('mail.mailers.smtp.port'),
+            'encryption' => config('mail.mailers.smtp.encryption'),
+            'username' => config('mail.mailers.smtp.username'),
+            'from_address' => config('mail.from.address'),
+            'verify_peer' => config('mail.mailers.smtp.verify_peer', 'not set')
+        ]);
         
         // Create a test email
-        \Illuminate\Support\Facades\Mail::raw('Test email from BijakSolat', function($message) {
+        \Illuminate\Support\Facades\Mail::raw('Test email from BijakSolat at ' . now(), function($message) {
             $message->to('luqmanhaqim21@gmail.com')
                     ->subject('BijakSolat Email Test');
         });
         
         \Illuminate\Support\Facades\Log::info('Test email sent successfully');
-        return 'Email sent successfully! Check your inbox.';
+        return 'Email sent successfully! Check your inbox and logs.';
         
     } catch (\Exception $e) {
         \Illuminate\Support\Facades\Log::error('Email error:', [
@@ -265,7 +273,6 @@ Route::get('/test-email', function () {
         return 'Email sending failed: ' . $e->getMessage();
     }
 });
-
 Route::get('/test-cloudinary', function () {
     try {
         $cloudinary = new \App\Services\CloudinaryService();

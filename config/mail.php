@@ -50,6 +50,10 @@ return [
             'auth_mode' => null,
             'verify_peer' => false,
             'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url(env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
+            'timeout' => env('MAIL_TIMEOUT', 30),
+    'verify_peer' => env('MAIL_VERIFY_PEER', false),
+    'verify_peer_name' => env('MAIL_VERIFY_PEER_NAME', false),
+    'allow_self_signed' => env('MAIL_ALLOW_SELF_SIGNED', true),
         ],
 
         'ses' => [
