@@ -1,36 +1,43 @@
 #!/bin/bash
 set -e
 
-echo "🔄 Running database migrations..."
-php artisan migrate --force
+echo "🔄 Setting up application..."
 
-echo "🔑 Generating application key if not set..."
-php artisan key:generate --force
-
-echo "🔗 Creating storage link..."
-php artisan storage:link
-
-echo "🗑️ Clearing caches..."
-php artisan config:clear
-php artisan cache:clear
-php artisan view:clear
-
-echo "♨️ Optimizing..."
-php artisan config:cache
-
-if [ "$APP_ENV" = "production" ]; then
-    echo "🚦 Caching routes for production..."
-    php artisan route:cache
-else
-    echo "🚦 Skipping route cache for development..."
-fi
-
-php artisan view:cache
-
-echo "📝 Checking storage permissions..."
+# Create necessary directories
+mkdir -p /var/www/storage/framework/{sessions,views,cache}
 chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 
+# Generate app key if not set
+if [ -z "$APP_KEY" ]; then
+    echo "🔑 Generating application key..."
+    php artisan key:generate --force
+fi
+
+# Create storage link
+if [ ! -L "/var/www/public/storage" ]; then
+    echo "🔗 Creating storage link..."
+    php artisan storage:link
+fi
+
+# Run migrations
+echo "🔄 Running database migrations..."
+php artisan migrate --force
+
+# Clear and cache in production
+if [ "$APP_ENV" = "production" ]; then
+    echo "♨️ Optimizing for production..."
+    php artisan config:cache
+    php artisan route:cache
+    php artisan view:cache
+else
+    echo "♨️ Clearing caches for development..."
+    php artisan config:clear
+    php artisan route:clear
+    php artisan view:clear
+fi
+
 echo "✅ Initialization complete!"
 
+# Start PHP built-in server
 exec "$@"
