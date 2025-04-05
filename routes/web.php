@@ -245,12 +245,36 @@ Route::post('/evaluation', [EvaluationItemController::class, 'store'])->name('ev
 
 Route::get('/test-email', function () {
     try {
-        Mail::raw('Test email from BijakSolat', function($message) {
+        \Illuminate\Support\Facades\Log::info('Starting email test...');
+        
+        // Test SMTP connection
+        $transport = new \Symfony\Component\Mailer\Transport\Smtp\EsmtpTransport(
+            config('mail.mailers.smtp.host'),
+            config('mail.mailers.smtp.port'),
+            true
+        );
+        $transport->setUsername(config('mail.mailers.smtp.username'));
+        $transport->setPassword(config('mail.mailers.smtp.password'));
+        
+        \Illuminate\Support\Facades\Log::info('SMTP Configuration:', [
+            'host' => config('mail.mailers.smtp.host'),
+            'port' => config('mail.mailers.smtp.port'),
+            'username' => config('mail.mailers.smtp.username'),
+            'encryption' => config('mail.mailers.smtp.encryption'),
+            'from_address' => config('mail.from.address'),
+        ]);
+
+        Mail::raw('Test email from BijakSolat at ' . now(), function($message) {
             $message->to('luqmanhaqim21@gmail.com')
                     ->subject('BijakSolat Email Test');
         });
-        return 'Email sent successfully!';
+        
+        return 'Email sent successfully! Check logs for details.';
     } catch (\Exception $e) {
+        \Illuminate\Support\Facades\Log::error('Email error:', [
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ]);
         return 'Email error: ' . $e->getMessage();
     }
 });
