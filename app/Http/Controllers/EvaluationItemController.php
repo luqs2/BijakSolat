@@ -20,7 +20,7 @@ class EvaluationItemController extends Controller
                 'year_id' => 'required|exists:years,id',
                 'items' => 'required|array',
                 'items.*.title' => 'required|string',
-                'items.*.type' => 'required|in:RUKUN,SUNAT,WAJIB',
+                'items.*.type' => 'nullable|in:RUKUN,SUNAT,WAJIB',
                 'items.*.sequence' => 'required|integer'
             ]);
 

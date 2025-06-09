@@ -98,7 +98,7 @@ const form = useForm({
     category: '',
     categoryId: null,
     year_id: selectedYear.value, // Use .value here
-    items: [{ title: '', type: 'RUKUN', sequence: 1 }]
+    items: [{ title: '', type: null, sequence: 1 }]
 });
 
 watch(selectedCategory, (newVal) => {
@@ -117,7 +117,7 @@ watch(selectedCategory, (newVal) => {
 const addItem = () => {
     form.items.push({
         title: '',
-        type: 'RUKUN',
+        type: null,
         sequence: form.items.length + 1
     });
 };
